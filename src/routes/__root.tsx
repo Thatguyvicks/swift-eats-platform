@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { CartProvider } from "@/state/cart";
+import { MobileTabBar } from "@/components/mobile-tab-bar";
 
 import appCss from "../styles.css?url";
 
@@ -73,11 +74,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Forka — Food, delivered with care" },
-      { name: "description", content: "Order from local kitchens, track in real time, eat well." },
-      { name: "author", content: "Forka" },
-      { property: "og:title", content: "Forka — Food, delivered with care" },
-      { property: "og:description", content: "Order from local kitchens, track in real time, eat well." },
+      { title: "Hilldash — Food, groceries & more, delivered" },
+      { name: "description", content: "Order food, groceries, pharmacy & drinks. Live tracking. Zero stress." },
+      { name: "author", content: "Hilldash" },
+      { property: "og:title", content: "Hilldash — Food, groceries & more, delivered" },
+      { property: "og:description", content: "Order food, groceries, pharmacy & drinks. Live tracking. Zero stress." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
@@ -119,6 +120,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <Outlet />
+        <MobileTabBar />
       </CartProvider>
     </QueryClientProvider>
   );
