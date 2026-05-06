@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { storesByVertical, verticals, type Vertical } from "@/data/stores";
+import { storesByVertical, verticals, type Store, type Vertical } from "@/data/stores";
 
 export const Route = createFileRoute("/v/$vertical")({
   component: VerticalPage,
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/v/$vertical")({
 });
 
 function VerticalPage() {
-  const { vertical, stores } = Route.useLoaderData() as ReturnType<typeof Route.useLoaderData>;
+  const { vertical, stores } = Route.useLoaderData() as { vertical: typeof verticals[number]; stores: Store[] };
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
