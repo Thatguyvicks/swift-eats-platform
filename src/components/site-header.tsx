@@ -8,6 +8,7 @@ export function SiteHeader() {
 
   const nav = [
     { to: "/browse", label: "Browse" },
+    { to: "/search", label: "Search" },
     { to: "/orders", label: "Orders" },
     { to: "/profile", label: "Profile" },
   ];
@@ -17,28 +18,26 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2 font-display text-2xl font-black tracking-tight">
           <span className="inline-block w-2.5 h-2.5 rounded-full bg-primary" />
-          forka
+          hilldash
         </Link>
 
-        <div className="hidden md:flex items-center gap-1.5 ml-2 px-3 py-1.5 rounded-full bg-secondary text-sm">
+        <Link to="/profile" className="hidden md:flex items-center gap-1.5 ml-2 px-3 py-1.5 rounded-full bg-secondary text-sm hover:bg-secondary/70 transition">
           <MapPin className="w-4 h-4 text-primary" />
           <span className="font-medium">221B Baker St</span>
           <span className="text-muted-foreground">· now</span>
-        </div>
+        </Link>
 
-        <div className="hidden lg:flex flex-1 max-w-md ml-auto relative">
+        <Link to="/search" className="hidden lg:flex flex-1 max-w-md ml-auto relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            placeholder="Search restaurants or dishes"
-            className="w-full pl-9 pr-4 py-2 rounded-full bg-secondary/80 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
-        </div>
+          <div className="w-full pl-9 pr-4 py-2 rounded-full bg-secondary/80 text-sm text-muted-foreground">
+            Search restaurants, dishes, groceries…
+          </div>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-1 ml-auto lg:ml-4">
           {nav.map((n) => (
             <Link
-              key={n.to}
-              to={n.to}
+              key={n.to} to={n.to}
               className={`px-3 py-2 text-sm font-medium rounded-full transition-colors ${
                 path.startsWith(n.to) ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
