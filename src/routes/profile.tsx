@@ -1,19 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Bell, CreditCard, Gift, MapPin, Settings, User } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Bell, CreditCard, Gift, Globe, MapPin, Moon, Settings, User } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
-  head: () => ({ meta: [{ title: "Your profile — Forka" }] }),
+  head: () => ({ meta: [{ title: "Your profile — Hilldash" }] }),
 });
 
 function Profile() {
   const items = [
-    { icon: MapPin, label: "Addresses", desc: "Home · Work · 2 saved" },
-    { icon: CreditCard, label: "Payment methods", desc: "Visa •••• 4321 · Apple Pay" },
-    { icon: Gift, label: "Promotions", desc: "1 active code · WELCOME10" },
-    { icon: Bell, label: "Notifications", desc: "Push · Email" },
-    { icon: Settings, label: "Account settings", desc: "Language, security, data" },
+    { icon: MapPin, label: "Addresses", desc: "Home · Work · 2 saved", to: "/profile" },
+    { icon: CreditCard, label: "Payment methods", desc: "Visa •••• 4321 · Apple Pay", to: "/profile" },
+    { icon: Gift, label: "Promotions", desc: "1 active code · WELCOME10", to: "/profile" },
+    { icon: Bell, label: "Notifications", desc: "Push · Email · 2 unread", to: "/notifications" },
+    { icon: Globe, label: "Language", desc: "English (US)", to: "/profile" },
+    { icon: Moon, label: "Dark mode", desc: "System default", to: "/profile" },
+    { icon: Settings, label: "Account settings", desc: "Security, data, privacy", to: "/profile" },
   ];
   return (
     <div className="min-h-screen bg-background">
@@ -25,7 +27,7 @@ function Profile() {
           </div>
           <div>
             <h1 className="font-display text-3xl font-black">Maya Rao</h1>
-            <div className="text-muted-foreground text-sm">maya@forka.app · Member since 2024</div>
+            <div className="text-muted-foreground text-sm">maya@hilldash.app · Hilldash One member</div>
           </div>
         </div>
 
@@ -44,7 +46,7 @@ function Profile() {
 
         <div className="mt-6 rounded-2xl bg-card border border-border/60 divide-y divide-border">
           {items.map((it) => (
-            <button key={it.label} className="w-full flex items-center gap-4 p-4 text-left hover:bg-secondary/40 transition">
+            <Link key={it.label} to={it.to} className="w-full flex items-center gap-4 p-4 text-left hover:bg-secondary/40 transition">
               <div className="w-10 h-10 rounded-xl bg-secondary grid place-items-center">
                 <it.icon className="w-5 h-5" />
               </div>
@@ -53,7 +55,7 @@ function Profile() {
                 <div className="text-xs text-muted-foreground">{it.desc}</div>
               </div>
               <div className="text-muted-foreground">›</div>
-            </button>
+            </Link>
           ))}
         </div>
 

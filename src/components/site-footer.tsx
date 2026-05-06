@@ -5,10 +5,10 @@ export function SiteFooter() {
         <div>
           <div className="font-display text-2xl font-black flex items-center gap-2">
             <span className="inline-block w-2.5 h-2.5 rounded-full bg-primary" />
-            forka
+            hilldash
           </div>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
-            Order from the best kitchens in your city. Delivered hot, fast, with care.
+            Food, groceries, pharmacy & drinks — delivered hot, fresh, on time.
           </p>
         </div>
         {[
@@ -27,7 +27,7 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="border-t border-border/60 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Forka. Crafted for the hungry.
+        © {new Date().getFullYear()} Hilldash. Delivered with care.
       </div>
     </footer>
   );
