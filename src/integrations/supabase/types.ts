@@ -14,7 +14,243 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      addresses: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          label: string
+          line: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          label: string
+          line: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          line?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      courier_locations: {
+        Row: {
+          lat: number
+          lng: number
+          order_id: string
+          progress: number
+          updated_at: string
+        }
+        Insert: {
+          lat: number
+          lng: number
+          order_id: string
+          progress?: number
+          updated_at?: string
+        }
+        Update: {
+          lat?: number
+          lng?: number
+          order_id?: string
+          progress?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courier_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          id: string
+          item_id: string
+          name: string
+          options: Json
+          order_id: string
+          qty: number
+          unit_price: number
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          name: string
+          options?: Json
+          order_id: string
+          qty: number
+          unit_price: number
+        }
+        Update: {
+          id?: string
+          item_id?: string
+          name?: string
+          options?: Json
+          order_id?: string
+          qty?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          fee: number
+          id: string
+          payment_method: string
+          scheduled_for: string | null
+          status: string
+          store_slug: string
+          subtotal: number
+          tax: number
+          tip: number
+          total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          fee?: number
+          id?: string
+          payment_method?: string
+          scheduled_for?: string | null
+          status?: string
+          store_slug: string
+          subtotal: number
+          tax?: number
+          tip?: number
+          total: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          fee?: number
+          id?: string
+          payment_method?: string
+          scheduled_for?: string | null
+          status?: string
+          store_slug?: string
+          subtotal?: number
+          tax?: number
+          tip?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_slug_fkey"
+            columns: ["store_slug"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          cover: string
+          created_at: string
+          cuisine: string
+          distance: string
+          eta: string
+          fee: string
+          menu: Json
+          name: string
+          price_level: number
+          rating: number
+          reviews: number
+          slug: string
+          tags: string[]
+          vertical: string
+        }
+        Insert: {
+          cover: string
+          created_at?: string
+          cuisine: string
+          distance: string
+          eta: string
+          fee: string
+          menu?: Json
+          name: string
+          price_level?: number
+          rating?: number
+          reviews?: number
+          slug: string
+          tags?: string[]
+          vertical: string
+        }
+        Update: {
+          cover?: string
+          created_at?: string
+          cuisine?: string
+          distance?: string
+          eta?: string
+          fee?: string
+          menu?: Json
+          name?: string
+          price_level?: number
+          rating?: number
+          reviews?: number
+          slug?: string
+          tags?: string[]
+          vertical?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
