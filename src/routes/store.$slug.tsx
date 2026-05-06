@@ -1,12 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Clock, MapPin, Plus, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { getStore } from "@/data/stores";
+import { getStore, type Store } from "@/data/stores";
 import { useCart } from "@/state/cart";
 
 export const Route = createFileRoute("/store/$slug")({
   component: StorePage,
-  loader: ({ params }) => {
+  loader: ({ params }): { store: Store } => {
     const store = getStore(params.slug);
     if (!store) throw notFound();
     return { store };
