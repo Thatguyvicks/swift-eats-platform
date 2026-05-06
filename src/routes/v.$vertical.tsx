@@ -30,7 +30,7 @@ export const Route = createFileRoute("/v/$vertical")({
 });
 
 function VerticalPage() {
-  const { vertical, stores } = Route.useLoaderData();
+  const { vertical, stores } = Route.useLoaderData() as ReturnType<typeof Route.useLoaderData>;
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
