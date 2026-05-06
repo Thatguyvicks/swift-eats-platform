@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { useCart } from "@/state/cart";
-import { stores } from "@/data/stores";
+import { fetchStore } from "@/lib/stores-api";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
@@ -35,7 +36,8 @@ function CartPage() {
   }
 
   // suggestions: other popular items from same store
-  const currentStore = stores.find((s) => s.slug === lines[0].storeSlug);
+  const slug = lines[0].storeSlug;
+  const { data: currentStore } = useQuery({ queryKey: ["store", slug], queryFn: () => fetchStore(slug) });
   const inCartIds = new Set(lines.map((l) => l.item.id));
   const suggestions =
     currentStore?.menu.flatMap((s) => s.items).filter((it) => !inCartIds.has(it.id)).slice(0, 3) ?? [];
