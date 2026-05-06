@@ -5,7 +5,7 @@ import { stores } from "@/data/stores";
 
 export const Route = createFileRoute("/orders")({
   component: Orders,
-  head: () => ({ meta: [{ title: "Your orders — Forka" }] }),
+  head: () => ({ meta: [{ title: "Your orders — Hilldash" }] }),
 });
 
 const past = [

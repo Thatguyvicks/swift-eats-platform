@@ -9,8 +9,8 @@ export const Route = createFileRoute("/browse")({
   component: Browse,
   head: () => ({
     meta: [
-      { title: "Browse restaurants — Forka" },
-      { name: "description", content: "Discover the best restaurants delivering to you right now." },
+      { title: "Browse stores — Hilldash" },
+      { name: "description", content: "Discover the best food, grocery, pharmacy and drink stores delivering near you." },
     ],
   }),
 });

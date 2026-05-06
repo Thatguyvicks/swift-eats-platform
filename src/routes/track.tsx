@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/track")({
   component: Track,
-  head: () => ({ meta: [{ title: "Tracking your order — Forka" }] }),
+  head: () => ({ meta: [{ title: "Tracking your order — Hilldash" }] }),
 });
 
 const stages = [
