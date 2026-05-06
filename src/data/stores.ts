@@ -253,3 +253,8 @@ export const stores: Store[] = [
 
 export const getStore = (slug: string) => stores.find((s) => s.slug === slug);
 export const storesByVertical = (v: Vertical) => stores.filter((s) => s.vertical === v);
+
+// Backwards-compat shim: re-exports types and the categories/verticals lists
+// so existing imports keep working. Live data now comes from `@/lib/stores-api`.
+export type { Vertical, Store, MenuItem, ItemOption, ItemOptionGroup } from "@/lib/store-types";
+export { verticals, categories } from "@/lib/verticals";
