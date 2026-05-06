@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search as SearchIcon, Mic, Star, X } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { stores } from "@/data/stores";
+import { fetchStores } from "@/lib/stores-api";
 
 export const Route = createFileRoute("/search")({
   component: SearchPage,
@@ -14,23 +15,18 @@ const trending = ["Ramen", "Sushi", "Donut", "Eggs", "Vitamin D"];
 
 function SearchPage() {
   const [q, setQ] = useState("");
+  const { data: stores = [] } = useQuery({ queryKey: ["stores"], queryFn: fetchStores });
 
   const { storeMatches, itemMatches } = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return { storeMatches: [], itemMatches: [] };
     const sm = stores.filter((s) => (s.name + s.cuisine).toLowerCase().includes(term));
     const im: { storeSlug: string; storeName: string; itemId: string; itemName: string; price: number; image: string }[] = [];
-    for (const s of stores) {
-      for (const sec of s.menu) {
-        for (const it of sec.items) {
-          if (it.name.toLowerCase().includes(term) || it.description.toLowerCase().includes(term)) {
-            im.push({ storeSlug: s.slug, storeName: s.name, itemId: it.id, itemName: it.name, price: it.price, image: it.image });
-          }
-        }
-      }
-    }
+    for (const s of stores) for (const sec of s.menu) for (const it of sec.items)
+      if (it.name.toLowerCase().includes(term) || it.description.toLowerCase().includes(term))
+        im.push({ storeSlug: s.slug, storeName: s.name, itemId: it.id, itemName: it.name, price: it.price, image: it.image });
     return { storeMatches: sm, itemMatches: im.slice(0, 12) };
-  }, [q]);
+  }, [q, stores]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,39 +36,27 @@ function SearchPage() {
 
         <div className="mt-5 relative">
           <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <input
-            autoFocus value={q} onChange={(e) => setQ(e.target.value)}
+          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)}
             placeholder="Search restaurants, dishes, groceries…"
-            className="w-full pl-12 pr-12 py-4 rounded-2xl bg-card border border-border text-base focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
+            className="w-full pl-12 pr-12 py-4 rounded-2xl bg-card border border-border text-base focus:outline-none focus:ring-2 focus:ring-primary/40" />
           {q ? (
-            <button onClick={() => setQ("")} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-secondary">
-              <X className="w-4 h-4" />
-            </button>
+            <button onClick={() => setQ("")} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-secondary"><X className="w-4 h-4" /></button>
           ) : (
-            <button title="Voice search" className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-secondary">
-              <Mic className="w-5 h-5 text-muted-foreground" />
-            </button>
+            <button title="Voice search" className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-secondary"><Mic className="w-5 h-5 text-muted-foreground" /></button>
           )}
         </div>
 
         {!q && (
           <div className="mt-8 space-y-7">
-            <Section title="Recent">
-              <Chips items={recent} onPick={setQ} />
-            </Section>
-            <Section title="Trending">
-              <Chips items={trending} onPick={setQ} />
-            </Section>
+            <Section title="Recent"><Chips items={recent} onPick={setQ} /></Section>
+            <Section title="Trending"><Chips items={trending} onPick={setQ} /></Section>
           </div>
         )}
 
         {q && (
           <div className="mt-8 space-y-8">
             <Section title={`Stores (${storeMatches.length})`}>
-              {storeMatches.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No stores match “{q}”.</p>
-              ) : (
+              {storeMatches.length === 0 ? <p className="text-sm text-muted-foreground">No stores match “{q}”.</p> : (
                 <div className="space-y-2">
                   {storeMatches.map((s) => (
                     <Link key={s.slug} to="/store/$slug" params={{ slug: s.slug }} className="flex items-center gap-3 p-3 rounded-2xl bg-card border border-border/60 hover:border-primary/50">
@@ -88,9 +72,7 @@ function SearchPage() {
               )}
             </Section>
             <Section title={`Items (${itemMatches.length})`}>
-              {itemMatches.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No items match.</p>
-              ) : (
+              {itemMatches.length === 0 ? <p className="text-sm text-muted-foreground">No items match.</p> : (
                 <div className="grid sm:grid-cols-2 gap-2">
                   {itemMatches.map((m) => (
                     <Link key={`${m.storeSlug}-${m.itemId}`} to="/store/$slug" params={{ slug: m.storeSlug }} className="flex items-center gap-3 p-3 rounded-2xl bg-card border border-border/60 hover:border-primary/50">

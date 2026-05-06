@@ -4,7 +4,10 @@ import { ArrowRight, Clock, MapPin, ShieldCheck, Sparkles, Star, TrendingUp } fr
 import hero from "@/assets/hero-food.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { categories, stores, verticals } from "@/data/stores";
+import { useQuery } from "@tanstack/react-query";
+import { categories, verticals } from "@/lib/verticals";
+import { fetchStores } from "@/lib/stores-api";
+import type { Store } from "@/lib/store-types";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -26,6 +29,7 @@ function greeting() {
 
 function Index() {
   const g = greeting();
+  const { data: stores = [] } = useQuery({ queryKey: ["stores"], queryFn: fetchStores });
   const popular = [...stores].sort((a, b) => b.reviews - a.reviews).slice(0, 4);
   const topRated = [...stores].sort((a, b) => b.rating - a.rating).slice(0, 4);
 
@@ -200,7 +204,7 @@ function Carousel({
 }: {
   title: string;
   subtitle: string;
-  stores: typeof stores;
+  stores: Store[];
   icon: typeof Star;
 }) {
   return (

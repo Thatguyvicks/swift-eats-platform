@@ -1,47 +1,59 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft, Clock, MapPin, Plus, Star, X, Minus } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { getStore, type ItemOption, type MenuItem, type Store } from "@/data/stores";
+import type { ItemOption, MenuItem } from "@/lib/store-types";
+import { fetchStore } from "@/lib/stores-api";
 import { useCart } from "@/state/cart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/store/$slug")({
   component: StorePage,
-  loader: ({ params }): { store: Store } => {
-    const store = getStore(params.slug);
-    if (!store) throw notFound();
-    return { store };
-  },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.store.name} — Hilldash` },
-          { name: "description", content: `${loaderData.store.cuisine} delivered in ${loaderData.store.eta}.` },
-          { property: "og:image", content: loaderData.store.cover },
-        ]
-      : [],
+  head: ({ params }) => ({
+    meta: [{ title: `Store — Hilldash` }, { name: "description", content: `Order from ${params.slug} on Hilldash.` }],
   }),
-  notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center">
-      <div className="text-center">
-        <h1 className="font-display text-3xl font-bold">Store not found</h1>
-        <Link to="/browse" className="mt-4 inline-block text-primary">Back to browse</Link>
-      </div>
-    </div>
-  ),
 });
 
 function StorePage() {
-  const { store } = Route.useLoaderData() as { store: Store };
+  const { slug } = Route.useParams();
+  const { data: store, isLoading, error } = useQuery({
+    queryKey: ["store", slug],
+    queryFn: async () => {
+      const s = await fetchStore(slug);
+      if (!s) throw notFound();
+      return s;
+    },
+  });
   const { add } = useCart();
   const [active, setActive] = useState<MenuItem | null>(null);
 
+  if (isLoading || !store) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <Skeleton className="h-64 sm:h-80 rounded-none" />
+        <div className="mx-auto max-w-5xl px-6 py-10 space-y-4">
+          <Skeleton className="h-10 w-2/3" />
+          <Skeleton className="h-4 w-1/3" />
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <div className="text-center">
+          <h1 className="font-display text-3xl font-bold">Store not found</h1>
+          <Link to="/browse" className="mt-4 inline-block text-primary">Back to browse</Link>
+        </div>
+      </div>
+    );
+  }
+
   const onItemClick = (item: MenuItem) => {
-    if (item.optionGroups?.length) {
-      setActive(item);
-    } else {
-      add(item, { slug: store.slug, name: store.name });
-    }
+    if (item.optionGroups?.length) setActive(item);
+    else add(item, { slug: store.slug, name: store.name });
   };
 
   return (
@@ -80,11 +92,8 @@ function StorePage() {
             <h2 className="font-display text-2xl font-bold mb-4">{section.section}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {section.items.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => onItemClick(item)}
-                  className="group flex items-stretch gap-4 p-3 rounded-2xl bg-card border border-border/60 hover:border-primary/50 hover:shadow-soft transition text-left"
-                >
+                <button key={item.id} onClick={() => onItemClick(item)}
+                  className="group flex items-stretch gap-4 p-3 rounded-2xl bg-card border border-border/60 hover:border-primary/50 hover:shadow-soft transition text-left">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       {item.popular && <span className="text-[10px] uppercase tracking-wider font-bold text-primary">Popular</span>}
@@ -107,31 +116,22 @@ function StorePage() {
       </section>
 
       {active && (
-        <ItemModal
-          item={active}
-          onClose={() => setActive(null)}
+        <ItemModal item={active} onClose={() => setActive(null)}
           onAdd={(selected, qty) => {
             add(active, { slug: store.slug, name: store.name }, { selected, qty });
             setActive(null);
-          }}
-        />
+          }} />
       )}
     </div>
   );
 }
 
-function ItemModal({
-  item, onClose, onAdd,
-}: {
-  item: MenuItem;
-  onClose: () => void;
-  onAdd: (selected: ItemOption[], qty: number) => void;
+function ItemModal({ item, onClose, onAdd }: {
+  item: MenuItem; onClose: () => void; onAdd: (selected: ItemOption[], qty: number) => void;
 }) {
   const [selected, setSelected] = useState<Record<string, ItemOption[]>>(() => {
     const init: Record<string, ItemOption[]> = {};
-    item.optionGroups?.forEach((g) => {
-      if (g.required && !g.multi && g.options[0]) init[g.id] = [g.options[0]];
-    });
+    item.optionGroups?.forEach((g) => { if (g.required && !g.multi && g.options[0]) init[g.id] = [g.options[0]]; });
     return init;
   });
   const [qty, setQty] = useState(1);
