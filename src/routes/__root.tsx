@@ -82,6 +82,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Hilldash — Food, groceries & more, delivered" },
+      { name: "twitter:description", content: "Order food, groceries, pharmacy & drinks. Live tracking. Zero stress." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dd369ece-313c-4ce0-898b-7fbc8c73957d/id-preview-bb84672c--1ff7aab7-40cd-4c86-b97f-c83f7b3a4ce5.lovable.app-1778093890429.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dd369ece-313c-4ce0-898b-7fbc8c73957d/id-preview-bb84672c--1ff7aab7-40cd-4c86-b97f-c83f7b3a4ce5.lovable.app-1778093890429.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
